@@ -1,0 +1,56 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+.pytest_cache/
+*.sqlite3
+*.log
+
+# Virtual environments
+.env/
+.venv/
+env/
+venv/
+
+# Environment variables file
+.env
+
+# Database files
+*.db
+*.db-journal
+*.sqlite
+
+# FastAPI specific
+*.bak
+*.swp
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# PostgreSQL
+*.pid
+*.sock
+
+# Django migrations
+migrations/
+
+# Python Wheels
+*.whl
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
