@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from app.db.models import User
 from app.core.security import get_password_hash, verify_password
@@ -14,12 +15,16 @@ def create_user(db: Session, user: UserCreate):
         names=user.names,
         last_names=user.last_names,
         email=user.email,
+        cellphone=user.cellphone,
         hashed_password=get_password_hash(user.password),
     )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    try:
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+    except IntegrityError as e:
+        raise ValueError(f"User already exists or there are duplicate data {e}.")
 
 
 def authenticate_user(db: Session, email: str, password: str):

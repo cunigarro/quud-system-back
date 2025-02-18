@@ -9,7 +9,7 @@ class LanguageVersionResponse(BaseModel):
     version: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class LanguageResponse(BaseModel):
@@ -18,4 +18,4 @@ class LanguageResponse(BaseModel):
     versions: List[LanguageVersionResponse] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True

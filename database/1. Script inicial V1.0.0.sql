@@ -1,17 +1,18 @@
--- Tabla de usuarios
+-- create database quud;
+-- use quud;
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     names VARCHAR(100) NOT NULL,
     last_names VARCHAR(100) NOT NULL,
     cellphone VARCHAR(20),
     email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    hashed_password VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP
 );
 
--- Tabla de lenguajes
 CREATE TABLE languages (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -21,7 +22,6 @@ CREATE TABLE languages (
     deleted_at TIMESTAMP
 );
 
--- Tabla de versiones de lenguajes
 CREATE TABLE language_versions (
     id SERIAL PRIMARY KEY,
     language_id INT REFERENCES languages(id) ON DELETE CASCADE,
@@ -30,7 +30,6 @@ CREATE TABLE language_versions (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla de proyectos
 CREATE TABLE projects (
     id SERIAL PRIMARY KEY,
     owner_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -42,7 +41,6 @@ CREATE TABLE projects (
     deleted_at TIMESTAMP
 );
 
--- Tabla de criterios
 CREATE TABLE criteria (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -52,7 +50,6 @@ CREATE TABLE criteria (
     deleted_at TIMESTAMP
 );
 
--- Tabla de reglas de calidad
 CREATE TABLE quality_rules (
     id SERIAL PRIMARY KEY,
     description TEXT NOT NULL,
@@ -61,14 +58,12 @@ CREATE TABLE quality_rules (
     deleted_at TIMESTAMP
 );
 
--- Tabla de relación entre reglas de calidad y criterios
 CREATE TABLE quality_rule_criteria (
     quality_rule_id INT REFERENCES quality_rules(id) ON DELETE CASCADE,
     criteria_id INT REFERENCES criteria(id) ON DELETE CASCADE,
     PRIMARY KEY (quality_rule_id, criteria_id)
 );
 
--- Tabla de inspecciones
 CREATE TABLE inspections (
     id SERIAL PRIMARY KEY,
     project_id INT REFERENCES projects(id) ON DELETE CASCADE,
