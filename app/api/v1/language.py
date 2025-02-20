@@ -1,14 +1,17 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import List
 
 from app.db.database import get_db
 from app.services.language_service import fetch_languages
-from app.schemas.language import LanguageResponse
+from app.schemas.response import StandardResponse
 
 router = APIRouter()
 
 
-@router.get("/languages", response_model=List[LanguageResponse])
+@router.get("/languages", response_model=StandardResponse)
 def get_languages(db: Session = Depends(get_db)):
-    return fetch_languages(db)
+    languages = fetch_languages(db)
+    return StandardResponse(
+        message="Languages fetched successfully",
+        data=languages
+    )
