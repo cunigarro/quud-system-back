@@ -27,7 +27,7 @@ class UserCreate(BaseModel):
     profile_metadata: Optional[ProfileMetadata] = None
 
 
-class UserLogin(BaseModel):
+class LoginRequest(BaseModel):
     username: str
     password: str
 

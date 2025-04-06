@@ -1,13 +1,21 @@
 from datetime import datetime
 
 from sqlalchemy import (
-    Column, Integer, String, TIMESTAMP, ForeignKey, UUID, Text
+    Column, Integer, String, TIMESTAMP, ForeignKey, UUID, Text, JSON
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import JSONB
 
 from app.db.database import Base
+
+
+class TokenBlacklist(Base):
+    __tablename__ = "token_blacklist"
+
+    id = Column(Integer, primary_key=True, index=True)
+    token = Column(Text, nullable=False)
+    created_at = Column(TIMESTAMP, default=datetime.utcnow)
 
 
 class User(Base):
@@ -61,3 +69,70 @@ class Project(Base):
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
     updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
     deleted_at = Column(TIMESTAMP, nullable=True)
+
+
+class RuleType(Base):
+    __tablename__ = "rule_types"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    created_at = Column(TIMESTAMP, default=func.current_timestamp())
+    updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
+    deleted_at = Column(TIMESTAMP, nullable=True)
+
+
+class Rule(Base):
+    __tablename__ = "rules"
+    id = Column(Integer, primary_key=True)
+    name = Column(Text, nullable=False)
+    description = Column(Text, nullable=False)
+    rule_type_id = Column(Integer, ForeignKey("rule_types.id", ondelete="SET NULL"))
+    execution_params = Column(JSON)
+    created_at = Column(TIMESTAMP, default=func.current_timestamp())
+    updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
+    deleted_at = Column(TIMESTAMP, nullable=True)
+
+    rule_type = relationship("RuleType")
+
+
+class RuleGroup(Base):
+    __tablename__ = "rule_groups"
+    id = Column(Integer, primary_key=True)
+    name = Column(Text, nullable=False)
+    description = Column(Text)
+    owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    created_at = Column(TIMESTAMP, default=func.current_timestamp())
+    updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
+    deleted_at = Column(TIMESTAMP, nullable=True)
+
+
+class RuleGroupRule(Base):
+    __tablename__ = "rule_group_rules"
+    id = Column(Integer, primary_key=True)
+    rule_id = Column(Integer, ForeignKey("rules.id", ondelete="CASCADE"))
+    group_id = Column(Integer, ForeignKey("rule_groups.id", ondelete="CASCADE"))
+    created_at = Column(TIMESTAMP, default=func.current_timestamp())
+
+
+class InspectionStatus(Base):
+    __tablename__ = "inspection_status"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+
+
+class Inspection(Base):
+    __tablename__ = "inspections"
+
+    id = Column(Integer, primary_key=True, index=True)
+    branch = Column(String(100), nullable=False)
+    project_id = Column(Integer, ForeignKey("projects.id", ondelete="CASCADE"))
+    rule_group_id = Column(Integer, ForeignKey("rule_groups.id", ondelete="SET NULL"), nullable=True)
+    inspection_status_id = Column(Integer, ForeignKey("inspection_status.id", ondelete="SET NULL"), nullable=True)
+    processed_at = Column(TIMESTAMP, server_default=func.now())
+    result = Column(JSON, nullable=True)
+    execute_steps = Column(JSON, nullable=True)
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+    deleted_at = Column(TIMESTAMP, nullable=True)
+
+    status = relationship("InspectionStatus", backref="inspections", lazy="joined")

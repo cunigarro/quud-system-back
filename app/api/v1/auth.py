@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, Form
+from fastapi import APIRouter, Depends, Header
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas.user import UserCreate, UserUpdate, LoginRequest
 from app.services.user_service import UserService
 from app.core.security import get_current_user
 from app.schemas.response import StandardResponse
@@ -26,8 +26,8 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/api/login", response_model=StandardResponse)
-def login(username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-    token = UserService(db).login_user(username, password)
+def login(request: LoginRequest, db: Session = Depends(get_db)):
+    token = UserService(db).login_user(request.username, request.password)
     if not token:
         return StandardResponse(
             message="Invalid credentials",
@@ -53,7 +53,7 @@ def get_user(db: Session = Depends(get_db), current_user: int = Depends(get_curr
         )
 
 
-@router.put("/profile", response_model=StandardResponse)
+@router.put("/user/profile", response_model=StandardResponse)
 def update_user(
     user_update: UserUpdate,
     db: Session = Depends(get_db),
@@ -70,3 +70,13 @@ def update_user(
             message="User update failed.",
             errors=str(e)
         )
+
+
+@router.post("/logout", response_model=StandardResponse)
+def logout(
+    db: Session = Depends(get_db),
+    authorization: str = Header(...)
+):
+    token = authorization.replace("Bearer ", "")
+    UserService(db).logout_user(token)
+    return StandardResponse(message="User logged out successfully")

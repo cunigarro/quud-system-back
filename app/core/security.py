@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta
 
-from fastapi import HTTPException, status, Depends
+from fastapi import HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.db.models import User
+from app.db.models import User, TokenBlacklist
 from app.db.database import get_db
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -40,17 +40,23 @@ def decode_access_token(token: str):
         return None
 
 
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+    if db.query(TokenBlacklist).filter(TokenBlacklist.token == token).first():
+        raise HTTPException(status_code=401, detail="Token has been revoked")
+
     payload = decode_access_token(token)
     if payload is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
         )
-    user = db.query(User).filter(User.id == payload["user_id"]).first()
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found",
-        )
+
+    user_id = payload.get("user_id")
+    if user_id is None:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    user = db.query(User).get(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
     return user

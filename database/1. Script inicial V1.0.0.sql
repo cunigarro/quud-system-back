@@ -42,34 +42,57 @@ CREATE TABLE projects (
     deleted_at TIMESTAMP
 );
 
-CREATE TABLE criteria (
+
+CREATE TABLE rule_types (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    params JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP
 );
 
-CREATE TABLE quality_rules (
+CREATE TABLE rules (
     id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL, 
     description TEXT NOT NULL,
+    rule_type_id INT REFERENCES rule_types(id) ON DELETE SET NULL,
+    execution_params JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP
 );
 
-CREATE TABLE quality_rule_criteria (
-    quality_rule_id INT REFERENCES quality_rules(id) ON DELETE CASCADE,
-    criteria_id INT REFERENCES criteria(id) ON DELETE CASCADE,
-    PRIMARY KEY (quality_rule_id, criteria_id)
+CREATE TABLE rule_groups (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    owner_id INT REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
+);
+
+CREATE TABLE rule_group_rules (
+    id SERIAL PRIMARY KEY,
+    rule_id INT NOT NULL REFERENCES rules(id) ON DELETE CASCADE,
+    group_id INT NOT NULL REFERENCES rule_groups(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE inspection_status (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) not null
 );
 
 CREATE TABLE inspections (
     id SERIAL PRIMARY KEY,
-    project_id INT REFERENCES projects(id) ON DELETE CASCADE,
     branch VARCHAR(100),
-    quality_rule_id INT REFERENCES quality_rules(id) ON DELETE SET NULL,
+    project_id INT REFERENCES projects(id) ON DELETE CASCADE,
+    rule_group_id INT REFERENCES rule_groups(id) ON DELETE SET NULL,
+    inspection_status_id INT REFERENCES rule_groups(id) ON DELETE SET NULL,
+    processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    result JSONB,
+    execute_steps JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP
@@ -103,3 +126,22 @@ INSERT INTO language_versions (language_id, version) VALUES
 (3, 'ES8');
 
 ALTER TABLE users ADD COLUMN profile_metadata JSONB;
+
+INSERT INTO rule_types (name) VALUES 
+('readability'),
+('maintainability'),
+('adherence_to_paradigm'),
+('adherence_to_standards'),
+('efficiency');
+
+INSERT INTO rules (name, description, rule_type_id, execution_params) VALUES 
+('Required Classes', 'At least one class is required in the project', 3, '{}'),
+('Implementation of all clasess', 'The classes that are defined must be used', 3, '{}');
+
+
+INSERT INTO inspection_status (name) VALUES
+('init'),
+('processing'),
+('completed'),
+('error');
+

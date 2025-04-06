@@ -5,7 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1 import (
     auth,
     language,
-    project
+    project,
+    rule,
+    inspection
 )
 from app.db.database import Base, engine
 
@@ -54,3 +56,5 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(language.router, prefix="/api/v1", tags=["languages"])
 app.include_router(project.router, prefix="/api/v1", tags=["projects"])
+app.include_router(rule.router, prefix="/api/v1", tags=["rules"])
+app.include_router(inspection.router, prefix="/api/v1", tags=["inspections"])
