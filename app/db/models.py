@@ -5,6 +5,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from sqlalchemy.dialects.postgresql import JSONB
 
 from app.db.database import Base
 
@@ -18,6 +19,7 @@ class User(Base):
     cellphone = Column(String, nullable=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    profile_metadata = Column(JSONB)
 
 
 class Language(Base):

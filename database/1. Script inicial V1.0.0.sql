@@ -100,3 +100,5 @@ INSERT INTO language_versions (language_id, version) VALUES
 (3, 'ES6'),
 (3, 'ES7'),
 (3, 'ES8');
+
+ALTER TABLE users ADD COLUMN profile_metadata JSONB;
