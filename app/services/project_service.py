@@ -15,9 +15,9 @@ class ProjectService:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Project creation failed: {str(e)}")
 
     @staticmethod
-    def get_projects(db: Session, skip: int = 0, limit: int = 10) -> list[ProjectResponse]:
+    def get_projects(owner_id: int, db: Session, skip: int = 0, limit: int = 10) -> list[ProjectResponse]:
         try:
-            projects = ProjectRepository.get_projects(db, skip, limit)
+            projects = ProjectRepository.get_projects(owner_id, db, skip, limit)
             return [ProjectResponse.from_orm(project) for project in projects]
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to fetch projects: {str(e)}")

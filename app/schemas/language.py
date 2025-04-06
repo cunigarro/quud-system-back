@@ -7,6 +7,7 @@ from typing import List
 
 class LanguageVersionResponse(BaseModel):
     version: str
+    id: int
 
     class Config:
         from_attributes = True

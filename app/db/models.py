@@ -57,6 +57,7 @@ class Project(Base):
     name = Column(String(100), nullable=False)
     url = Column(String(255), nullable=True)
     language_id = Column(Integer, ForeignKey("languages.id", ondelete="SET NULL"), nullable=True)
+    language_version_id = Column(Integer, ForeignKey("language_versions.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
     updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
     deleted_at = Column(TIMESTAMP, nullable=True)

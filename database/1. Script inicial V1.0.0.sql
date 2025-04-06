@@ -36,6 +36,7 @@ CREATE TABLE projects (
     name VARCHAR(100) NOT NULL,
     url VARCHAR(255),
     language_id INT REFERENCES languages(id) ON DELETE SET NULL,
+    language_version_id INT REFERENCES language_versions(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP

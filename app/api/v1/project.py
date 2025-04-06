@@ -6,6 +6,7 @@ from app.schemas.project import ProjectCreate
 from app.services.project_service import ProjectService
 from app.core.security import get_current_user
 from app.schemas.response import StandardResponse
+from app.db.models import User
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ router = APIRouter()
 def create_project(
     project: ProjectCreate,
     db: Session = Depends(get_db),
-    current_user: int = Depends(get_current_user)
+    current_user: User = Depends(get_current_user)
 ):
     project_data = ProjectService.create_project(
         db=db,
@@ -28,9 +29,10 @@ def create_project(
 def get_projects(
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    projects = ProjectService.get_projects(db=db, skip=skip, limit=limit)
+    projects = ProjectService.get_projects(current_user, db=db, skip=skip, limit=limit)
     return StandardResponse(
         message="Projects fetched successfully",
         data=projects
@@ -38,7 +40,11 @@ def get_projects(
 
 
 @router.get("/projects/{project_id}", response_model=StandardResponse)
-def get_project(project_id: int, db: Session = Depends(get_db)):
+def get_project(
+    project_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     project = ProjectService.get_project_by_id(db=db, project_id=project_id)
     return StandardResponse(
         message="Project fetched successfully",
@@ -47,6 +53,10 @@ def get_project(project_id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/projects/{project_id}", response_model=StandardResponse, status_code=status.HTTP_200_OK)
-def delete_project(project_id: int, db: Session = Depends(get_db)):
+def delete_project(
+    project_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     ProjectService.delete_project(db=db, project_id=project_id)
     return StandardResponse(message="Project deleted successfully")

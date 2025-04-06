@@ -15,7 +15,8 @@ class ProjectRepository:
                 owner_id=owner_id,
                 name=project.name,
                 url=project.url,
-                language_id=project.language_id
+                language_id=project.language_id,
+                language_version_id=project.language_version_id
             )
             db.add(db_project)
             db.commit()
@@ -26,9 +27,9 @@ class ProjectRepository:
             raise Exception(f"Error occurred while creating project: {str(e)}")
 
     @staticmethod
-    def get_projects(db: Session, skip: int = 0, limit: int = 10):
+    def get_projects(owner_id: int, db: Session, skip: int = 0, limit: int = 10):
         try:
-            return db.query(Project).offset(skip).limit(limit).all()
+            return db.query(Project).filter(Project.owner_id == owner_id).offset(skip).limit(limit).all()
         except SQLAlchemyError as e:
             raise Exception(f"Error occurred while fetching projects: {str(e)}")
 

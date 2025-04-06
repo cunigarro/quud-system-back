@@ -8,6 +8,7 @@ class ProjectBase(BaseModel):
     name: str
     url: Optional[str] = None
     language_id: Optional[int] = None
+    language_version_id: Optional[int] = None
 
 
 class ProjectCreate(ProjectBase):
