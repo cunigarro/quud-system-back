@@ -1,6 +1,10 @@
 fastapi
-uvicorn
+uvicorn[standard]
 sqlalchemy
-mangum
-pydantic-settings
+psycopg2-binary
 python-dotenv
+pydantic
+pydantic-settings
+mangum
+python-jose[cryptography]
+passlib[bcrypt]
