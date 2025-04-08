@@ -8,7 +8,7 @@ class RuleTypeSchema(BaseModel):
     name: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class RuleSchema(BaseModel):
@@ -19,7 +19,7 @@ class RuleSchema(BaseModel):
     rule_type: RuleTypeSchema
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class RuleGroupCreate(BaseModel):
@@ -35,7 +35,7 @@ class RuleGroupSchema(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class RuleTypeResponse(BaseModel):
