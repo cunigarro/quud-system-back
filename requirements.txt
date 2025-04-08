@@ -49,6 +49,7 @@ keras==3.0.5
 kiwisolver==1.4.5
 lazy_loader==0.4
 libclang==16.0.6
+mangum
 Markdown==3.6
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
+from mangum import Mangum
 
 from app.api.v1 import (
     auth,
@@ -58,3 +59,5 @@ app.include_router(language.router, prefix="/api/v1/languages", tags=["languages
 app.include_router(project.router, prefix="/api/v1/projects", tags=["projects"])
 app.include_router(rule.router, prefix="/api/v1/rules", tags=["rules"])
 app.include_router(inspection.router, prefix="/api/v1/inspections", tags=["inspections"])
+
+handler = Mangum(app)
