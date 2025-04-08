@@ -8,3 +8,4 @@ pydantic-settings
 mangum
 python-jose[cryptography]
 passlib[bcrypt]
+email-validator
