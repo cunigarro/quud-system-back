@@ -11,7 +11,7 @@ from app.db.models import User
 router = APIRouter()
 
 
-@router.post("/projects/", response_model=StandardResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=StandardResponse, status_code=status.HTTP_201_CREATED)
 def create_project(
     project: ProjectCreate,
     db: Session = Depends(get_db),
@@ -25,7 +25,7 @@ def create_project(
     return StandardResponse(message="Project created successfully", data=project_data)
 
 
-@router.get("/projects/", response_model=StandardResponse)
+@router.get("/", response_model=StandardResponse)
 def get_projects(
     skip: int = 0,
     limit: int = 10,
@@ -39,7 +39,7 @@ def get_projects(
     )
 
 
-@router.get("/projects/{project_id}", response_model=StandardResponse)
+@router.get("/{project_id}", response_model=StandardResponse)
 def get_project(
     project_id: int,
     db: Session = Depends(get_db),
@@ -52,7 +52,7 @@ def get_project(
     )
 
 
-@router.delete("/projects/{project_id}", response_model=StandardResponse, status_code=status.HTTP_200_OK)
+@router.delete("/{project_id}", response_model=StandardResponse, status_code=status.HTTP_200_OK)
 def delete_project(
     project_id: int,
     db: Session = Depends(get_db),

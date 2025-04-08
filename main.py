@@ -53,8 +53,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(language.router, prefix="/api/v1", tags=["languages"])
-app.include_router(project.router, prefix="/api/v1", tags=["projects"])
-app.include_router(rule.router, prefix="/api/v1", tags=["rules"])
-app.include_router(inspection.router, prefix="/api/v1", tags=["inspections"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
+app.include_router(language.router, prefix="/api/v1/languages", tags=["languages"])
+app.include_router(project.router, prefix="/api/v1/projects", tags=["projects"])
+app.include_router(rule.router, prefix="/api/v1/rules", tags=["rules"])
+app.include_router(inspection.router, prefix="/api/v1/inspections", tags=["inspections"])

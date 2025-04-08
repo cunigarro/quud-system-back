@@ -8,7 +8,7 @@ from app.schemas.response import StandardResponse
 router = APIRouter()
 
 
-@router.get("/languages", response_model=StandardResponse)
+@router.get("/", response_model=StandardResponse)
 def get_languages(db: Session = Depends(get_db)):
     languages = fetch_languages(db)
     return StandardResponse(

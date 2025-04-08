@@ -9,7 +9,7 @@ from app.schemas.response import StandardResponse
 router = APIRouter()
 
 
-@router.post("/inspections", response_model=StandardResponse)
+@router.post("/", response_model=StandardResponse)
 def create_inspection(
     data: InspectionCreate,
     db: Session = Depends(get_db),
@@ -22,7 +22,7 @@ def create_inspection(
     )
 
 
-@router.get("/inspections/{inspection_id}", response_model=StandardResponse)
+@router.get("/{inspection_id}", response_model=StandardResponse)
 def get_inspection(
     inspection_id: int,
     db: Session = Depends(get_db),

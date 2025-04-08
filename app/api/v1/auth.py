@@ -10,7 +10,7 @@ from app.schemas.response import StandardResponse
 router = APIRouter()
 
 
-@router.post("/api/register", response_model=StandardResponse)
+@router.post("/register", response_model=StandardResponse)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     try:
         user_data = UserService(db).register_user(user)
@@ -25,7 +25,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         )
 
 
-@router.post("/api/login", response_model=StandardResponse)
+@router.post("/login", response_model=StandardResponse)
 def login(request: LoginRequest, db: Session = Depends(get_db)):
     token = UserService(db).login_user(request.username, request.password)
     if not token:
