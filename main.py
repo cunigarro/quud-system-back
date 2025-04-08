@@ -8,7 +8,8 @@ from app.api.v1 import (
     language,
     project,
     rule,
-    inspection
+    inspection,
+    health
 )
 from app.db.database import Base, engine
 
@@ -54,6 +55,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(health.router)
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(language.router, prefix="/api/v1/languages", tags=["languages"])
 app.include_router(project.router, prefix="/api/v1/projects", tags=["projects"])
