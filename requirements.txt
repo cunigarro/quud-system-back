@@ -2,4 +2,5 @@ fastapi
 uvicorn
 sqlalchemy
 mangum
+pydantic-settings
 python-dotenv
