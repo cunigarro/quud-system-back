@@ -9,3 +9,4 @@ mangum
 python-jose[cryptography]
 passlib[bcrypt]
 email-validator
+typing_extensions==4.10.0
