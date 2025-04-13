@@ -25,6 +25,7 @@ class InspectionDetailResponse(BaseModel):
     status: str
     processed_at: Optional[datetime]
     result: Optional[Any]
+    execution_info: Optional[Any]
 
     class Config:
         from_attributes = True

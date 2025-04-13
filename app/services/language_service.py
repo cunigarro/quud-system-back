@@ -12,6 +12,7 @@ def fetch_languages(db_session):
             for version in language.versions
         ]
         language_data = LanguageResponse(
+            id=language.id,
             name=language.name,
             uuid=language.uuid,
             versions=language_versions

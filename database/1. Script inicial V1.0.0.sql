@@ -145,3 +145,35 @@ INSERT INTO inspection_status (name) VALUES
 ('completed'),
 ('error');
 
+ALTER TABLE rules
+RENAME COLUMN execution_params TO flow_config;
+
+ALTER TABLE rule_groups
+ADD COLUMN flow_config JSON;
+
+update rules set flow_config = '{
+    "init_flow": [
+        {
+            "name": "required_classes",
+            "settings": {}
+        }
+    ]
+}' where id = 1;
+
+
+update rules set flow_config = '{
+    "init_flow": [
+        {
+            "name": "implementation_all_classes",
+            "settings": {}
+        }
+    ]
+}' where id = 2;
+
+
+ALTER TABLE inspections
+ADD COLUMN history_status JSON;
+
+
+ALTER TABLE inspections
+RENAME COLUMN execute_steps TO execution_info;

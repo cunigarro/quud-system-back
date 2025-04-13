@@ -66,6 +66,9 @@ class Project(Base):
     url = Column(String(255), nullable=True)
     language_id = Column(Integer, ForeignKey("languages.id", ondelete="SET NULL"), nullable=True)
     language_version_id = Column(Integer, ForeignKey("language_versions.id", ondelete="SET NULL"), nullable=True)
+
+    inspections = relationship("Inspection", back_populates="project", lazy="dynamic")
+
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
     updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
     deleted_at = Column(TIMESTAMP, nullable=True)
@@ -86,7 +89,7 @@ class Rule(Base):
     name = Column(Text, nullable=False)
     description = Column(Text, nullable=False)
     rule_type_id = Column(Integer, ForeignKey("rule_types.id", ondelete="SET NULL"))
-    execution_params = Column(JSON)
+    flow_config = Column(JSON)
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
     updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
     deleted_at = Column(TIMESTAMP, nullable=True)
@@ -100,6 +103,7 @@ class RuleGroup(Base):
     name = Column(Text, nullable=False)
     description = Column(Text)
     owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    flow_config = Column(JSON, nullable=True)
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
     updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
     deleted_at = Column(TIMESTAMP, nullable=True)
@@ -130,9 +134,13 @@ class Inspection(Base):
     inspection_status_id = Column(Integer, ForeignKey("inspection_status.id", ondelete="SET NULL"), nullable=True)
     processed_at = Column(TIMESTAMP, server_default=func.now())
     result = Column(JSON, nullable=True)
-    execute_steps = Column(JSON, nullable=True)
+    execution_info = Column(JSON, nullable=True)
+    history_status = Column(JSON, default=[])
+
+    project = relationship("Project", back_populates="inspections")
+    rule_group = relationship("RuleGroup", backref="inspections", lazy="joined")
+    status = relationship("InspectionStatus", backref="inspections", lazy="joined")
+
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
     deleted_at = Column(TIMESTAMP, nullable=True)
-
-    status = relationship("InspectionStatus", backref="inspections", lazy="joined")

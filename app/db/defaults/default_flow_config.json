@@ -1,0 +1,63 @@
+{
+    "init_flow": [
+        {
+            "name": "fetch_code",
+            "settings": {
+                "enabled_servers": [
+                    "github",
+                    "bitbucket",
+                    "gitlab"
+                ]
+            }
+        },
+        {
+            "name": "validations",
+            "settings": {}
+        },
+        {
+            "name": "inspection",
+            "settings": {
+                "driver": "push_state",
+                "state": "processing"
+            }
+        }
+    ],
+    "finish_flow": [
+        {
+            "name": "clean",
+            "settings": {}
+        },
+        {
+            "name": "inspection",
+            "settings": {
+                "driver": "push_state",
+                "state": "completed"
+            }
+        },
+        {
+            "name": "notify",
+            "settings": {
+                "driver": "firebase"
+            }
+        }
+    ],
+    "on_error": [
+        {
+            "name": "clean",
+            "settings": {}
+        },
+        {
+            "name": "inspection",
+            "settings": {
+                "driver": "push_state",
+                "state": "processing"
+            }
+        },
+        {
+            "name": "notify",
+            "settings": {
+                "driver": "firebase"
+            }
+        }
+    ]
+}

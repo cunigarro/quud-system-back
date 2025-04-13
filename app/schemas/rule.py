@@ -15,7 +15,7 @@ class RuleSchema(BaseModel):
     id: int
     name: str
     description: str
-    execution_params: Optional[dict]
+    flow_config: Optional[dict]
     rule_type: RuleTypeSchema
 
     class Config:
@@ -51,7 +51,7 @@ class RuleResponse(BaseModel):
     name: str
     description: str
     rule_type: Optional[RuleTypeResponse]
-    execution_params: Optional[Any]
+    flow_config: Optional[Any]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 

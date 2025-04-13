@@ -9,11 +9,12 @@ class RuleRepository:
         return db.query(Rule).filter(Rule.deleted_at.is_(None)).all()
 
     @staticmethod
-    def create_group(db: Session, name: str, description: str, owner_id: int, rule_ids: list):
+    def create_group(db: Session, name: str, description: str, owner_id: int, rule_ids: list, flow_config=dict):
         group = RuleGroup(
             name=name,
             description=description,
-            owner_id=owner_id
+            owner_id=owner_id,
+            flow_config=flow_config
         )
         db.add(group)
         db.commit()

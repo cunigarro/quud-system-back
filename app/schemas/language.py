@@ -14,6 +14,7 @@ class LanguageVersionResponse(BaseModel):
 
 
 class LanguageResponse(BaseModel):
+    id: int
     name: str
     uuid: UUID
     versions: List[LanguageVersionResponse] = []

@@ -1,7 +1,9 @@
 from sqlalchemy.orm import Session
+
 from app.db.models import Inspection, InspectionStatus
 from app.schemas.inspections import InspectionCreate
 from app.db.enums import InspectionStatusEnum
+from sqlalchemy.orm import joinedload
 
 
 class InspectionRepository:
@@ -11,14 +13,21 @@ class InspectionRepository:
     def get_by_id_with_status(self, inspection_id: int):
         result = (
             self.db.query(Inspection)
-            .join(InspectionStatus, Inspection.inspection_status_id == InspectionStatus.id)
+            .join(
+                InspectionStatus,
+                Inspection.inspection_status_id == InspectionStatus.id
+            )
             .add_columns(
                 Inspection.id,
                 Inspection.result,
+                Inspection.execution_info,
                 Inspection.processed_at,
                 InspectionStatus.name.label("status_name")
             )
-            .filter(Inspection.id == inspection_id, Inspection.deleted_at.is_(None))
+            .filter(
+                Inspection.id == inspection_id,
+                Inspection.deleted_at.is_(None)
+            )
             .first()
         )
         return result
@@ -29,7 +38,9 @@ class InspectionRepository:
         ).first()
 
         if not init_status:
-            raise Exception("Initial inspection status not found")
+            raise ValueError(
+                "Initial inspection status not found"
+            )
 
         new_inspection = Inspection(
             branch=inspection_data.branch,
@@ -41,3 +52,23 @@ class InspectionRepository:
         self.db.commit()
         self.db.refresh(new_inspection)
         return new_inspection
+
+    def get_inspection_with_group(self, inspection_id: int) -> Inspection:
+        return (
+            self.db.query(Inspection)
+            .options(joinedload(Inspection.rule_group))
+            .filter(Inspection.id == inspection_id)
+            .first()
+        )
+
+    def update_execution_info(self, inspection_id: int, info: dict) -> Inspection:
+        inspection = self.db.query(Inspection).filter(
+            Inspection.id == inspection_id
+        ).first()
+        if not inspection:
+            raise ValueError("Inspection not found")
+
+        inspection.execution_info = info
+        self.db.commit()
+        self.db.refresh(inspection)
+        return inspection
