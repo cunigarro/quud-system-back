@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=StandardResponse)
-def get_languages(db: Session = Depends(get_db)):
+def health_check(db: Session = Depends(get_db)):
     return StandardResponse(
         message="Service running",
         data={

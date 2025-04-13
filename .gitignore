@@ -54,3 +54,8 @@ dist/
 
 # Windows
 Thumbs.db
+
+
+log.txt
+*.ppk
+*.pem
