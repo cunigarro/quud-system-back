@@ -32,7 +32,7 @@ def get_projects(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    projects = ProjectService.get_projects(current_user, db=db, skip=skip, limit=limit)
+    projects = ProjectService.get_projects(current_user.id, db=db, skip=skip, limit=limit)
     return StandardResponse(
         message="Projects fetched successfully",
         data=projects
