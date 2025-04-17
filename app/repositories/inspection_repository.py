@@ -32,7 +32,35 @@ class InspectionRepository:
         )
         return result
 
-    def create_inspection(self, inspection_data: InspectionCreate) -> Inspection:
+    def get_by_user(self, owner_id: int, skip: int = 0, limit: int = 10):
+        result = (
+            self.db.query(Inspection)
+            .join(
+                InspectionStatus,
+                Inspection.inspection_status_id == InspectionStatus.id
+            )
+            .add_columns(
+                Inspection.id,
+                Inspection.result,
+                Inspection.execution_info,
+                Inspection.processed_at,
+                InspectionStatus.name.label("status_name")
+            )
+            .filter(
+                Inspection.owner_id == owner_id,
+                Inspection.deleted_at.is_(None)
+            )
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+        return result
+
+    def create_inspection(
+        self,
+        inspection_data: InspectionCreate,
+        owner_id
+    ) -> Inspection:
         init_status = self.db.query(InspectionStatus).filter(
             InspectionStatus.name == InspectionStatusEnum.INIT.value
         ).first()
@@ -46,7 +74,9 @@ class InspectionRepository:
             branch=inspection_data.branch,
             project_id=inspection_data.project_id,
             rule_group_id=inspection_data.rule_group_id,
-            inspection_status_id=init_status.id
+            inspection_status_id=init_status.id,
+            notification_info=inspection_data.notification_info.dict(),
+            owner_id=owner_id
         )
         self.db.add(new_inspection)
         self.db.commit()
@@ -61,7 +91,11 @@ class InspectionRepository:
             .first()
         )
 
-    def update_execution_info(self, inspection_id: int, info: dict) -> Inspection:
+    def update_execution_info(
+        self,
+        inspection_id: int,
+        info: dict
+    ) -> Inspection:
         inspection = self.db.query(Inspection).filter(
             Inspection.id == inspection_id
         ).first()

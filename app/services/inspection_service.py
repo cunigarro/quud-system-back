@@ -1,7 +1,11 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
-from app.schemas.inspections import InspectionCreate, InspectionResponse
+from app.schemas.inspections import (
+    InspectionCreate,
+    InspectionResponse,
+    InspectionDetailResponse
+)
 from app.repositories.inspection_repository import InspectionRepository
 from app.components.orchestrator import Orchestrator
 
@@ -11,10 +15,13 @@ class InspectionService:
         self.repository = InspectionRepository(db)
         self.db = db
 
-    def create_inspection(self, data: InspectionCreate) -> InspectionResponse:
+    def create_inspection(
+        self, data: InspectionCreate,
+        owner_id
+    ) -> InspectionResponse:
         inspection = None
         try:
-            inspection = self.repository.create_inspection(data)
+            inspection = self.repository.create_inspection(data, owner_id)
             inspection = self.repository.get_inspection_with_group(
                 inspection.id
             )
@@ -58,3 +65,25 @@ class InspectionService:
             "result": inspection.result,
             "execution_info": inspection.execution_info,
         }
+
+    def get_inspection_by_user(
+        self,
+        inspection_id: int,
+        skip: int = 0,
+        limit: int = 10
+    ):
+        inspections = self.repository.get_by_user(
+            inspection_id,
+            skip=skip,
+            limit=limit
+        )
+        result = [
+            InspectionDetailResponse(**{
+                "id": model.id,
+                "status": model.status_name,
+                "processed_at": model.processed_at,
+                "result": model.result,
+                "execution_info": model.execution_info,
+            }) for model in inspections
+        ]
+        return result

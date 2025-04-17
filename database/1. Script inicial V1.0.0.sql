@@ -177,3 +177,10 @@ ADD COLUMN history_status JSON;
 
 ALTER TABLE inspections
 RENAME COLUMN execute_steps TO execution_info;
+
+ALTER TABLE inspections
+ADD COLUMN notification_info JSON;
+
+
+ALTER TABLE inspections
+ADD COLUMN owner_id INT REFERENCES users(id) ON DELETE CASCADE;

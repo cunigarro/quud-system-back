@@ -4,6 +4,7 @@ LOG_FILE=log.txt
 
 echo "🐍 Activando entorno virtual"
 python3.12 -m venv venv
+source venv/bin/activate
 
 echo "⬆️ Actualizando código"
 git pull

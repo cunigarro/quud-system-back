@@ -29,6 +29,8 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     profile_metadata = Column(JSONB)
 
+    inspections = relationship("Inspection", back_populates="owner", lazy="dynamic")
+
 
 class Language(Base):
     __tablename__ = 'languages'
@@ -130,14 +132,17 @@ class Inspection(Base):
     id = Column(Integer, primary_key=True, index=True)
     branch = Column(String(100), nullable=False)
     project_id = Column(Integer, ForeignKey("projects.id", ondelete="CASCADE"))
+    owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     rule_group_id = Column(Integer, ForeignKey("rule_groups.id", ondelete="SET NULL"), nullable=True)
     inspection_status_id = Column(Integer, ForeignKey("inspection_status.id", ondelete="SET NULL"), nullable=True)
     processed_at = Column(TIMESTAMP, server_default=func.now())
     result = Column(JSON, nullable=True)
     execution_info = Column(JSON, nullable=True)
     history_status = Column(JSON, default=[])
+    notification_info = Column(JSON, default={})
 
     project = relationship("Project", back_populates="inspections")
+    owner = relationship("User", back_populates="inspections")
     rule_group = relationship("RuleGroup", backref="inspections", lazy="joined")
     status = relationship("InspectionStatus", backref="inspections", lazy="joined")
 

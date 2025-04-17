@@ -76,6 +76,7 @@ class Orchestrator:
                 })
 
             except Exception as e:
+                print(f"Exception {str(e)}")
                 self.execution_result["steps"].append({
                     "rule": rule_name,
                     "scope": flow_scope,
@@ -118,7 +119,11 @@ class Orchestrator:
             finish_success = self.run_flow(
                 flow_config.get("finish_flow", []), flow_scope="general"
             )
-            success = success and finish_success
+
+            if not finish_success:
+                return self.execution_result
+
+            success = True
 
         # If something failed, run on_error
         if not success:

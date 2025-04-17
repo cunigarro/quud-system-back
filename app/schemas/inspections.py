@@ -3,10 +3,15 @@ from typing import Optional, Any
 from datetime import datetime
 
 
+class NotificationInspection(BaseModel):
+    firebase_token: str = ''
+
+
 class InspectionCreate(BaseModel):
     branch: str
     project_id: int
     rule_group_id: Optional[int] = None
+    notification_info: Optional[NotificationInspection] = None
 
 
 class InspectionResponse(BaseModel):
