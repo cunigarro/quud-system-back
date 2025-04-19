@@ -31,12 +31,12 @@ def get_inspection(
     current_user: int = Depends(get_current_user)
 ):
     try:
-        inspection_data = InspectionService(db).get_inspection_by_id(
+        inspection = InspectionService(db).get_inspection_by_id(
             inspection_id
         )
         return StandardResponse(
             message="Inspection fetched successfully",
-            data={"inspection": InspectionDetailResponse(**inspection_data)}
+            data={"inspection": inspection}
         )
     except Exception as e:
         return StandardResponse(

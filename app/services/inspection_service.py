@@ -53,18 +53,12 @@ class InspectionService:
             )
 
     def get_inspection_by_id(self, inspection_id: int):
-        inspection = self.repository.get_by_id_with_status(inspection_id)
+        inspection = self.repository.get_by_id(inspection_id)
 
         if not inspection:
             raise ValueError("Inspection not found")
 
-        return {
-            "id": inspection.id,
-            "status": inspection.status_name,
-            "processed_at": inspection.processed_at,
-            "result": inspection.result,
-            "execution_info": inspection.execution_info,
-        }
+        return InspectionDetailResponse.from_orm(inspection)
 
     def get_inspection_by_user(
         self,
@@ -78,12 +72,6 @@ class InspectionService:
             limit=limit
         )
         result = [
-            InspectionDetailResponse(**{
-                "id": model.id,
-                "status": model.status_name,
-                "processed_at": model.processed_at,
-                "result": model.result,
-                "execution_info": model.execution_info,
-            }) for model in inspections
+            InspectionDetailResponse.from_orm(model) for model in inspections
         ]
         return result

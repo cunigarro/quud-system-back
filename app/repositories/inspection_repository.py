@@ -1,28 +1,22 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload, joinedload
 
 from app.db.models import Inspection, InspectionStatus
 from app.schemas.inspections import InspectionCreate
 from app.db.enums import InspectionStatusEnum
-from sqlalchemy.orm import joinedload
 
 
 class InspectionRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def get_by_id_with_status(self, inspection_id: int):
+    def get_by_id(self, inspection_id: int):
         result = (
             self.db.query(Inspection)
-            .join(
-                InspectionStatus,
-                Inspection.inspection_status_id == InspectionStatus.id
-            )
-            .add_columns(
-                Inspection.id,
-                Inspection.result,
-                Inspection.execution_info,
-                Inspection.processed_at,
-                InspectionStatus.name.label("status_name")
+            .options(
+                selectinload(Inspection.project),
+                selectinload(Inspection.owner),
+                selectinload(Inspection.rule_group),
+                selectinload(Inspection.status),
             )
             .filter(
                 Inspection.id == inspection_id,
@@ -35,16 +29,11 @@ class InspectionRepository:
     def get_by_user(self, owner_id: int, skip: int = 0, limit: int = 10):
         result = (
             self.db.query(Inspection)
-            .join(
-                InspectionStatus,
-                Inspection.inspection_status_id == InspectionStatus.id
-            )
-            .add_columns(
-                Inspection.id,
-                Inspection.result,
-                Inspection.execution_info,
-                Inspection.processed_at,
-                InspectionStatus.name.label("status_name")
+            .options(
+                selectinload(Inspection.project),
+                selectinload(Inspection.owner),
+                selectinload(Inspection.rule_group),
+                selectinload(Inspection.status),
             )
             .filter(
                 Inspection.owner_id == owner_id,
@@ -54,6 +43,7 @@ class InspectionRepository:
             .limit(limit)
             .all()
         )
+
         return result
 
     def create_inspection(
