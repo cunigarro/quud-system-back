@@ -14,7 +14,7 @@ class ProjectRepository:
             db_project = Project(
                 owner_id=owner_id,
                 name=project.name,
-                url=project.url,
+                url=str(project.url),
                 language_id=project.language_id,
                 language_version_id=project.language_version_id
             )

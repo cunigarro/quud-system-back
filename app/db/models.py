@@ -33,7 +33,7 @@ class User(Base):
 
 
 class Language(Base):
-    __tablename__ = 'languages'
+    __tablename__ = "languages"
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
@@ -42,7 +42,8 @@ class Language(Base):
     updated_at = Column(TIMESTAMP, default=datetime.utcnow)
     deleted_at = Column(TIMESTAMP)
 
-    versions = relationship('LanguageVersion', back_populates='language')
+    projects = relationship("Project", back_populates="language")
+    versions = relationship("LanguageVersion", back_populates="language")
 
 
 class LanguageVersion(Base):
@@ -57,6 +58,7 @@ class LanguageVersion(Base):
     updated_at = Column(TIMESTAMP, default=datetime.utcnow)
 
     language = relationship('Language', back_populates='versions')
+    projects = relationship("Project", back_populates="language_version")
 
 
 class Project(Base):
@@ -70,6 +72,8 @@ class Project(Base):
     language_version_id = Column(Integer, ForeignKey("language_versions.id", ondelete="SET NULL"), nullable=True)
 
     inspections = relationship("Inspection", back_populates="project", lazy="dynamic")
+    language = relationship("Language", back_populates="projects")
+    language_version = relationship("LanguageVersion", back_populates="projects")
 
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
     updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
@@ -137,6 +141,7 @@ class Inspection(Base):
     inspection_status_id = Column(Integer, ForeignKey("inspection_status.id", ondelete="SET NULL"), nullable=True)
     processed_at = Column(TIMESTAMP, server_default=func.now())
     result = Column(JSON, nullable=True)
+    error = Column(Text, nullable=True)
     execution_info = Column(JSON, nullable=True)
     history_status = Column(JSON, default=[])
     notification_info = Column(JSON, default={})

@@ -9,7 +9,11 @@ class ProjectService:
     @staticmethod
     def create_project(db: Session, project: ProjectCreate, owner_id: int) -> ProjectResponse:
         try:
-            db_project = ProjectRepository.create_project(db, project, owner_id)
+            db_project = ProjectRepository.create_project(
+                db,
+                project,
+                owner_id
+            )
             return ProjectResponse.from_orm(db_project)
         except Exception as e:
             raise HTTPException(

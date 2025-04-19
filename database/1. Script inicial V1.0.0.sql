@@ -184,3 +184,6 @@ ADD COLUMN notification_info JSON;
 
 ALTER TABLE inspections
 ADD COLUMN owner_id INT REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE inspections
+ADD COLUMN error TEXT;

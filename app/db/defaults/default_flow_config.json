@@ -50,7 +50,7 @@
             "name": "inspection",
             "settings": {
                 "driver": "push_state",
-                "state": "processing"
+                "state": "error"
             }
         },
         {

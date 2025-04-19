@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 from sqlalchemy.orm import Session
 
 from app.db.models import Inspection, Rule, RuleGroupRule
+from app.db.enums import LanguageEnum
 from .base_rule import BaseRule
 
 
@@ -17,6 +18,8 @@ class Orchestrator:
         }
         self.context = {
             "inspection": inspection,
+            "language": LanguageEnum(inspection.project.language.name),
+            "languaje_version": inspection.project.language_version.version,
             "data": {},
             "db": self.db
         }
@@ -76,7 +79,8 @@ class Orchestrator:
                 })
 
             except Exception as e:
-                print(f"Exception {str(e)}")
+                self.inspection.error = f"Exception {str(e)}"
+                self.db.commit()
                 self.execution_result["steps"].append({
                     "rule": rule_name,
                     "scope": flow_scope,

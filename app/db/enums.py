@@ -25,3 +25,14 @@ class InspectionStatusEnum(str, Enum):
             4: cls.ERROR
         }
         return reverse_mapping.get(id, None)
+
+
+class LanguageEnum(str, Enum):
+    python = "Python"
+    java = "Java"
+    javascript = "JavaScript"
+
+
+class ResultStatusEnum(str, Enum):
+    VALIDATION_ERROR = "validation_error"
+    OK = "ok"

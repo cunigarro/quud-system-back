@@ -26,6 +26,7 @@ class InspectionResponse(BaseModel):
     project_id: int
     rule_group_id: Optional[int]
     created_at: datetime
+    error: str
 
     class Config:
         from_attributes = True
@@ -47,6 +48,7 @@ class InspectionDetailResponse(BaseModel):
     rule_group: Optional[RuleGroupResponse]
     processed_at: Optional[datetime]
     result: Optional[Any]
+    error: str
     execution_info: Optional[Any]
     history_status: Optional[Any]
 
