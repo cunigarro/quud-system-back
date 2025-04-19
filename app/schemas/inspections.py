@@ -48,7 +48,7 @@ class InspectionDetailResponse(BaseModel):
     rule_group: Optional[RuleGroupResponse]
     processed_at: Optional[datetime]
     result: Optional[Any]
-    error: str
+    error: Optional[str] = None
     execution_info: Optional[Any]
     history_status: Optional[Any]
 

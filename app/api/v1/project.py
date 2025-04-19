@@ -34,7 +34,12 @@ def get_projects(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    projects = ProjectService.get_projects(current_user.id, db=db, skip=skip, limit=limit)
+    projects = ProjectService.get_projects(
+        current_user.id,
+        db=db,
+        skip=skip,
+        limit=limit
+    )
     return StandardResponse(
         message="Projects fetched successfully",
         data={
@@ -49,7 +54,10 @@ def get_project(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    project = ProjectService.get_project_by_id(db=db, project_id=project_id)
+    project = ProjectService.get_project_by_id(
+        db=db,
+        project_id=project_id
+    )
     return StandardResponse(
         message="Project fetched successfully",
         data={

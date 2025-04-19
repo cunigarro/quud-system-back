@@ -18,6 +18,7 @@ class ProjectCreate(ProjectBase):
 class ProjectResponse(ProjectBase):
     id: int
     owner_id: int
+    url: HttpUrl
     created_at: datetime
     updated_at: datetime
     deleted_at: Optional[datetime]
