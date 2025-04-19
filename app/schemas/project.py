@@ -1,12 +1,12 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 
 
 class ProjectBase(BaseModel):
     name: str
-    url: Optional[str] = None
+    url: HttpUrl
     language_id: Optional[int] = None
     language_version_id: Optional[int] = None
 
