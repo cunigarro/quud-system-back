@@ -17,12 +17,14 @@ def create_project(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    project_data = ProjectService.create_project(
+    project = ProjectService.create_project(
         db=db,
         project=project,
         owner_id=current_user.id
     )
-    return StandardResponse(message="Project created successfully", data=project_data)
+    return StandardResponse(message="Project created successfully", data={
+        'project': project
+    })
 
 
 @router.get("/", response_model=StandardResponse)
@@ -35,7 +37,9 @@ def get_projects(
     projects = ProjectService.get_projects(current_user.id, db=db, skip=skip, limit=limit)
     return StandardResponse(
         message="Projects fetched successfully",
-        data=projects
+        data={
+            'projects': projects
+        }
     )
 
 
@@ -48,7 +52,9 @@ def get_project(
     project = ProjectService.get_project_by_id(db=db, project_id=project_id)
     return StandardResponse(
         message="Project fetched successfully",
-        data=project
+        data={
+            'project': project
+        }
     )
 
 

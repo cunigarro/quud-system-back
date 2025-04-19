@@ -12,6 +12,7 @@ def health_check(db: Session = Depends(get_db)):
     return StandardResponse(
         message="Service running",
         data={
-            'doc': '/docs'
+            'doc': '/docs',
+            'version': '1.0.0'
         }
     )

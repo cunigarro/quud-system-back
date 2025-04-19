@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from fastapi import Query
 from sqlalchemy.orm import Session
 
-from app.schemas.inspections import InspectionCreate, InspectionDetailResponse
+from app.schemas.inspections import InspectionCreate
 from app.services.inspection_service import InspectionService
 from app.db.database import get_db
 from app.core.security import get_current_user

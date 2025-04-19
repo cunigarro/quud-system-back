@@ -13,10 +13,12 @@ router = APIRouter()
 @router.post("/register", response_model=StandardResponse)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     try:
-        user_data = UserService(db).register_user(user)
+        user = UserService(db).register_user(user)
         return StandardResponse(
             message="User registered successfully",
-            data=user_data
+            data={
+                'user': user
+            }
         )
     except Exception as e:
         return StandardResponse(
@@ -35,7 +37,7 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
         )
     return StandardResponse(
         message="Login successful",
-        data={"token": token}
+        data=token
     )
 
 

@@ -13,5 +13,7 @@ def get_languages(db: Session = Depends(get_db)):
     languages = fetch_languages(db)
     return StandardResponse(
         message="Languages fetched successfully",
-        data=languages
+        data={
+            'languages': languages
+        }
     )
