@@ -52,4 +52,6 @@ class RuleService:
 
     def get_user_groups(self, user_id: int):
         groups = RuleRepository.get_groups_by_user(self.db, user_id)
-        return [RuleGroupResponse.from_orm(group) for group in groups]
+        return [
+            RuleGroupResponse.from_orm(group) for group in groups
+        ]

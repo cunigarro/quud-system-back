@@ -101,6 +101,7 @@ class Rule(Base):
     deleted_at = Column(TIMESTAMP, nullable=True)
 
     rule_type = relationship("RuleType")
+    group_rules = relationship("RuleGroupRule", back_populates="rule")
 
 
 class RuleGroup(Base):
@@ -114,6 +115,8 @@ class RuleGroup(Base):
     updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
     deleted_at = Column(TIMESTAMP, nullable=True)
 
+    group_rules = relationship("RuleGroupRule", back_populates="group")
+
 
 class RuleGroupRule(Base):
     __tablename__ = "rule_group_rules"
@@ -121,6 +124,9 @@ class RuleGroupRule(Base):
     rule_id = Column(Integer, ForeignKey("rules.id", ondelete="CASCADE"))
     group_id = Column(Integer, ForeignKey("rule_groups.id", ondelete="CASCADE"))
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
+
+    group = relationship("RuleGroup", back_populates="group_rules")
+    rule = relationship("Rule", back_populates="group_rules")
 
 
 class InspectionStatus(Base):

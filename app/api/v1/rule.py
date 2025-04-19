@@ -35,4 +35,7 @@ def get_user_groups(
     current_user=Depends(get_current_user)
 ):
     groups = RuleService(db).get_user_groups(current_user.id)
-    return StandardResponse(message="Groups fetched", data={"groups": groups})
+    return StandardResponse(
+        message="Groups fetched",
+        data={"groups": groups}
+    )

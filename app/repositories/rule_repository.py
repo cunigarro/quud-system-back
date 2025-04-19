@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.db.models import Rule, RuleGroup, RuleGroupRule
 
@@ -29,4 +29,9 @@ class RuleRepository:
 
     @staticmethod
     def get_groups_by_user(db: Session, user_id: int):
-        return db.query(RuleGroup).filter(RuleGroup.owner_id == user_id, RuleGroup.deleted_at.is_(None)).all()
+        return (
+            db.query(RuleGroup)
+            .options(joinedload(RuleGroup.group_rules).joinedload(RuleGroupRule.rule))
+            .filter(RuleGroup.owner_id == user_id, RuleGroup.deleted_at.is_(None))
+            .all()
+        )
