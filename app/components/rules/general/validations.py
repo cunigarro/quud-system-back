@@ -45,7 +45,9 @@ class RuleHandler(BaseRule):
 
         if not check_language:
             self.save_inspection({
-                'validations': 'Code no detected in the repository and branch'
+                'validations': [
+                    f'Code of {language.value} no detected'
+                ]
             })
             raise ValueError(f"Language is not detected: {language}")
 

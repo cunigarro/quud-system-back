@@ -68,7 +68,7 @@ class InspectionDetailResponse(BaseModel):
     total_score: float
     total_attributes: float
     total_paradigm: float
-    validations: Optional[Any] = None
+    validations: List[str]
     error: Optional[str] = None
     execution_info: Optional[Any]
     history_status: Optional[Any]

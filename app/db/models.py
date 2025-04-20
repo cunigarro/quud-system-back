@@ -165,6 +165,7 @@ class Inspection(Base):
     error = Column(Text, nullable=True)
     execution_info = Column(JSON, nullable=True)
     history_status = Column(JSON, default=[])
+    validations = Column(JSON, default=[])
     notification_info = Column(JSON, default={})
 
     total_score = Column(Float, default=0)
