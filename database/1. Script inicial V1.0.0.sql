@@ -245,3 +245,32 @@ ADD COLUMN message text;
 
 ALTER TABLE inspection_rule
 ADD COLUMN details JSON;
+
+-- readability
+INSERT INTO rules (name, description, rule_type_id, flow_config) VALUES
+('Clear Naming for Classes', 'Ensures class names are descriptive and aligned with their responsibilities.', 1, '{"init_flow": [{"name": "clarity_class_names", "settings": {}}]}'),
+('Clear Naming for Functions', 'Ensures function names clearly express their purpose.', 1, '{"init_flow": [{"name": "clarity_function_names", "settings": {}}]}'),
+('Clear Naming for Variables', 'Ensures variable names clearly express their purpose.', 1, '{"init_flow": [{"name": "clarity_variable_names", "settings": {}}]}');
+
+-- maintainability
+INSERT INTO rules (name, description, rule_type_id, flow_config) VALUES
+('Modular Code Structure', 'Ensures code is organized into small, reusable, and independent modules.', 2, '{"init_flow": [{"name": "modular_structure", "settings": {}}]}'),
+('Separation of Concerns', 'Ensures each component or function has a single responsibility.', 2, '{"init_flow": [{"name": "separation_of_concerns", "settings": {}}]}');
+
+-- Portability 
+INSERT INTO rules (name, description, rule_type_id, flow_config) VALUES
+('Efficient Use of Data Structures', 'Ensures the selection of appropriate data structures for the problem.', 5, '{"init_flow": [{"name": "efficient_data_structures", "settings": {}}]}'),
+('Efficient Algorithms', 'Checks if the algorithms used optimize execution time.', 5, '{"init_flow": [{"name": "efficient_algorithms", "settings": {}}]}');
+
+-- Polymorphism in OOP
+INSERT INTO rules (name, description, rule_type_id, flow_config) VALUES
+('Platform Independence', 'Verifies that code does not rely on system-specific functionality.', 4, '{"init_flow": [{"name": "platform_independence", "settings": {}}]}');
+
+-- Encapsulation in OOP
+INSERT INTO rules (name, description, rule_type_id, flow_config) VALUES
+('Use of Polymorphism', 'Ensures polymorphic methods are used for generalized behavior across classes.', 6, '{"init_flow": [{"name": "use_of_polymorphism", "settings": {}}]}');
+
+-- Abstraction in OOP
+INSERT INTO rules (name, description, rule_type_id, flow_config) VALUES
+('Private Attributes', 'Ensures sensitive data is protected using private variables.', 7, '{"init_flow": [{"name": "private_attributes", "settings": {}}]}'),
+('Public Access Methods', 'Ensures access to private data is done through getters/setters.', 7, '{"init_flow": [{"name": "access_methods", "settings": {}}]}');
