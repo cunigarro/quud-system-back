@@ -32,10 +32,12 @@ class LanguageEnum(str, Enum):
     java = "Java"
     javascript = "JavaScript"
 
-
-class ResultStatusEnum(str, Enum):
-    VALIDATION_ERROR = "validation_error"
-    OK = "ok"
+    def extensions(self):
+        return {
+            LanguageEnum.python: [".py"],
+            LanguageEnum.java: [".java"],
+            LanguageEnum.javascript: [".js", ".jsx"],
+        }[self]
 
 
 class RuleDimensionEnum(str, Enum):

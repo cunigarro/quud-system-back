@@ -1,7 +1,7 @@
 import os
 
 from app.components.base_rule import BaseRule
-from app.db.enums import LanguageEnum, ResultStatusEnum
+from app.db.enums import LanguageEnum
 
 
 class CodeLanguageValidator:
@@ -18,6 +18,8 @@ class CodeLanguageValidator:
             return self._contains_files_with_extension(".java")
         elif language == LanguageEnum.python:
             return self._contains_files_with_extension(".py")
+        elif language == LanguageEnum.javascript:
+            return self._contains_files_with_extension(".js")
         else:
             raise ValueError(f"Unsupported language: {language}")
 
@@ -42,8 +44,7 @@ class RuleHandler(BaseRule):
         check_language = validator.has_valid_code(language)
 
         if not check_language:
-            self.save_result({
-                'inspection_status': ResultStatusEnum.VALIDATION_ERROR,
+            self.save_inspection({
                 'validations': 'Code no detected in the repository and branch'
             })
             raise ValueError(f"Language is not detected: {language}")

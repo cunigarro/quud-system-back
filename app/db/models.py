@@ -189,7 +189,9 @@ class InspectionRule(Base):
     inspection_id = Column(Integer, ForeignKey("inspections.id", ondelete="CASCADE"), nullable=False)
     rule_id = Column(Integer, ForeignKey("rules.id", ondelete="SET NULL"), nullable=True)
     calification = Column(Float)
-    comment = Column(JSON)
+    comments = Column(JSON, default=[])
+    message = Column(Text, nullable=True)
+    details = Column(JSON, nullable={})
 
     inspection = relationship("Inspection", back_populates="inspection_rules")
     rule = relationship("Rule", back_populates="inspection_rules")

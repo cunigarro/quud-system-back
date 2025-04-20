@@ -104,16 +104,19 @@ class Orchestrator:
         )
         if not success:
             self.run_flow(
-                flow_config.get("on_error", []), flow_scope="general"
+                flow_config.get("on_error", []),
+                flow_scope="general"
             )
             self.execution_result["success"] = False
             return self.execution_result
 
-        # Run init_flow for each rule
+        # Run init_flow for (each rule)
         for rule in rules:
             rule_flow = rule.flow_config or {}
+            self.context['rule_id'] = rule.id
             rule_success = self.run_flow(
-                rule_flow.get("init_flow", []), flow_scope="quality"
+                rule_flow.get("init_flow", []),
+                flow_scope="quality"
             )
             if not rule_success:
                 success = False
@@ -121,7 +124,8 @@ class Orchestrator:
         # Run finish_flow if everything ok
         if success:
             finish_success = self.run_flow(
-                flow_config.get("finish_flow", []), flow_scope="general"
+                flow_config.get("finish_flow", []),
+                flow_scope="general"
             )
 
             if not finish_success:

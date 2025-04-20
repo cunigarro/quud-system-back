@@ -40,10 +40,19 @@ class StatusResponse(BaseModel):
         from_attributes = True
 
 
+class Comment(BaseModel):
+    line_start: Optional[str] = None
+    line_end: Optional[str] = None
+    path_file: str
+    description: str
+
+
 class InspectionRuleResponse(BaseModel):
     id: int
     calification: Optional[float]
-    comment: Optional[dict]
+    comments: Optional[List[Comment]]
+    details: Optional[Any] = None
+    message: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -59,7 +68,7 @@ class InspectionDetailResponse(BaseModel):
     total_score: float
     total_attributes: float
     total_paradigm: float
-    result: Optional[Any] = None
+    validations: Optional[Any] = None
     error: Optional[str] = None
     execution_info: Optional[Any]
     history_status: Optional[Any]

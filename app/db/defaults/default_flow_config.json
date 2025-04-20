@@ -47,10 +47,6 @@
     ],
     "on_error": [
         {
-            "name": "clean",
-            "settings": {}
-        },
-        {
             "name": "inspection",
             "settings": {
                 "driver": "push_state",

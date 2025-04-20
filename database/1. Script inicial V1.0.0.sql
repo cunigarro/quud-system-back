@@ -231,3 +231,17 @@ CREATE TABLE inspection_rule (
     calification REAL,
     comment JSON
 );
+
+ALTER TABLE inspections
+RENAME COLUMN result TO validations;
+
+
+ALTER TABLE inspection_rule
+RENAME COLUMN comment TO comments;
+
+
+ALTER TABLE inspection_rule
+ADD COLUMN message text;
+
+ALTER TABLE inspection_rule
+ADD COLUMN details JSON;
