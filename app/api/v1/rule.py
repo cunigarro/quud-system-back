@@ -27,7 +27,7 @@ def list_rules_types(
     rules = RuleService(db).get_all_rules_types()
     return StandardResponse(
         message="Rules types fetched",
-        data={"rules types": rules}
+        data={"rules_types": rules}
     )
 
 

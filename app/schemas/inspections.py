@@ -43,7 +43,7 @@ class StatusResponse(BaseModel):
 class Comment(BaseModel):
     line_start: Optional[str] = None
     line_end: Optional[str] = None
-    path_file: str
+    path_file: Optional[str] = None
     description: str
 
 
