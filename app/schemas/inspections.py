@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Optional, Any, List
 from datetime import datetime
 
 
@@ -26,7 +26,7 @@ class InspectionResponse(BaseModel):
     project_id: int
     rule_group_id: Optional[int]
     created_at: datetime
-    error: str
+    error: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -40,6 +40,15 @@ class StatusResponse(BaseModel):
         from_attributes = True
 
 
+class InspectionRuleResponse(BaseModel):
+    id: int
+    calification: Optional[float]
+    comment: Optional[dict]
+
+    class Config:
+        from_attributes = True
+
+
 class InspectionDetailResponse(BaseModel):
     id: int
     status: StatusResponse
@@ -47,10 +56,14 @@ class InspectionDetailResponse(BaseModel):
     owner: UserResponse
     rule_group: Optional[RuleGroupResponse]
     processed_at: Optional[datetime]
-    result: Optional[Any]
+    total_score: float
+    total_attributes: float
+    total_paradigm: float
+    result: Optional[Any] = None
     error: Optional[str] = None
     execution_info: Optional[Any]
     history_status: Optional[Any]
+    inspection_rules: List[InspectionRuleResponse]
 
     class Config:
         from_attributes = True

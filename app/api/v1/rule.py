@@ -19,6 +19,18 @@ def list_rules(
     return StandardResponse(message="Rules fetched", data={"rules": rules})
 
 
+@router.get("/rules/types", response_model=StandardResponse)
+def list_rules_types(
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    rules = RuleService(db).get_all_rules_types()
+    return StandardResponse(
+        message="Rules types fetched",
+        data={"rules types": rules}
+    )
+
+
 @router.post("/rules/groups", response_model=StandardResponse)
 def create_group(
     payload: RuleGroupCreate,

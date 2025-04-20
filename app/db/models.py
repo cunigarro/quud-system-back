@@ -1,13 +1,24 @@
 from datetime import datetime
 
 from sqlalchemy import (
-    Column, Integer, String, TIMESTAMP, ForeignKey, UUID, Text, JSON
+    Column,
+    Integer,
+    String,
+    TIMESTAMP,
+    ForeignKey,
+    UUID,
+    Text,
+    JSON,
+    Enum as PgEnum,
+    func,
+    Float
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import JSONB
 
 from app.db.database import Base
+from app.db.enums import RuleDimensionEnum
 
 
 class TokenBlacklist(Base):
@@ -84,6 +95,7 @@ class RuleType(Base):
     __tablename__ = "rule_types"
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
+    dimension = Column(PgEnum(RuleDimensionEnum, name="rule_dimension", create_type=False))
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
     updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
     deleted_at = Column(TIMESTAMP, nullable=True)
@@ -102,6 +114,7 @@ class Rule(Base):
 
     rule_type = relationship("RuleType")
     group_rules = relationship("RuleGroupRule", back_populates="rule")
+    inspection_rules = relationship("InspectionRule", back_populates="rule")
 
 
 class RuleGroup(Base):
@@ -111,6 +124,9 @@ class RuleGroup(Base):
     description = Column(Text)
     owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     flow_config = Column(JSON, nullable=True)
+    attributes_weights = Column(JSON, nullable=True)
+    paradigm_weights = Column(JSON, nullable=True)
+    alfa = Column(Float)
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
     updated_at = Column(TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp())
     deleted_at = Column(TIMESTAMP, nullable=True)
@@ -146,17 +162,34 @@ class Inspection(Base):
     rule_group_id = Column(Integer, ForeignKey("rule_groups.id", ondelete="SET NULL"), nullable=True)
     inspection_status_id = Column(Integer, ForeignKey("inspection_status.id", ondelete="SET NULL"), nullable=True)
     processed_at = Column(TIMESTAMP, server_default=func.now())
-    result = Column(JSON, nullable=True)
     error = Column(Text, nullable=True)
     execution_info = Column(JSON, nullable=True)
     history_status = Column(JSON, default=[])
     notification_info = Column(JSON, default={})
 
+    total_score = Column(Float, default=0)
+    total_paradigm = Column(Float, default=0)
+    total_attributes = Column(Float, default=0)
+
     project = relationship("Project", back_populates="inspections")
     owner = relationship("User", back_populates="inspections")
     rule_group = relationship("RuleGroup", backref="inspections", lazy="joined")
     status = relationship("InspectionStatus", backref="inspections", lazy="joined")
+    inspection_rules = relationship("InspectionRule", back_populates="inspection", cascade="all, delete-orphan")
 
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
     deleted_at = Column(TIMESTAMP, nullable=True)
+
+
+class InspectionRule(Base):
+    __tablename__ = "inspection_rule"
+
+    id = Column(Integer, primary_key=True, index=True)
+    inspection_id = Column(Integer, ForeignKey("inspections.id", ondelete="CASCADE"), nullable=False)
+    rule_id = Column(Integer, ForeignKey("rules.id", ondelete="SET NULL"), nullable=True)
+    calification = Column(Float)
+    comment = Column(JSON)
+
+    inspection = relationship("Inspection", back_populates="inspection_rules")
+    rule = relationship("Rule", back_populates="inspection_rules")

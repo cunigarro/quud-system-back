@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
 from app.repositories.rule_repository import RuleRepository
-from app.schemas.rule import RuleGroupCreate, RuleResponse
+from app.schemas.rule import RuleGroupCreate, RuleResponse, RuleTypeResponse
 from app.schemas.rule_group import RuleGroupResponse
 
 
@@ -17,6 +17,16 @@ class RuleService:
         try:
             rules = RuleRepository.get_all_rules(self.db)
             return [RuleResponse.from_orm(rule) for rule in rules]
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to fetch rules: {str(e)}"
+            )
+
+    def get_all_rules_types(self):
+        try:
+            types = RuleRepository.get_all_rules_types(self.db)
+            return [RuleTypeResponse.from_orm(type) for type in types]
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -41,7 +51,10 @@ class RuleService:
                 description=data.description,
                 owner_id=user_id,
                 rule_ids=data.rule_ids,
-                flow_config=flow_config
+                flow_config=flow_config,
+                attributes_weights=data.attributes_weights,
+                paradigm_weights=data.paradigm_weights,
+                alfa=data.alfa
             )
             return RuleGroupResponse.from_orm(db_group)
         except Exception as e:

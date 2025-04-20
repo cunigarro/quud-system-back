@@ -28,6 +28,10 @@
             "settings": {}
         },
         {
+            "name": "calification",
+            "settings": {}
+        },
+        {
             "name": "inspection",
             "settings": {
                 "driver": "push_state",

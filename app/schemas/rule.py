@@ -1,6 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 from typing import Optional, List, Any
 from datetime import datetime
+
+from app.db.enums import RuleDimensionEnum
 
 
 class RuleTypeSchema(BaseModel):
@@ -22,10 +24,37 @@ class RuleSchema(BaseModel):
         from_attributes = True
 
 
+class WeigthType(BaseModel):
+    rule_type_id: int
+    quantity: float
+
+    class Config:
+        from_attributes = True
+
+
 class RuleGroupCreate(BaseModel):
     name: str
     description: Optional[str]
     rule_ids: List[int]
+    attributes_weights: List[WeigthType]
+    paradigm_weights: List[WeigthType]
+    alfa: float
+
+    @model_validator(mode="after")
+    def check_weights_sum_to_one(self):
+        total = sum(w.quantity for w in self.attributes_weights)
+        if abs(total - 1.0) >= 1e-6:
+            raise ValueError(
+                f'The sum of the weights of attributes should be exactly 1.0, but it was {total}'
+            )
+
+        total = sum(w.quantity for w in self.paradigm_weights)
+        if abs(total - 1.0) >= 1e-6:
+            raise ValueError(
+                f'The sum of the weights of paradigm should be exactly 1.0, but it was {total}'
+            )
+
+        return self
 
 
 class RuleGroupSchema(BaseModel):
@@ -41,6 +70,7 @@ class RuleGroupSchema(BaseModel):
 class RuleTypeResponse(BaseModel):
     id: int
     name: str
+    dimension: RuleDimensionEnum
 
     class Config:
         from_attributes = True

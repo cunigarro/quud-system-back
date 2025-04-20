@@ -187,3 +187,47 @@ ADD COLUMN owner_id INT REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE inspections
 ADD COLUMN error TEXT;
+
+update rule_types set name = 'portability' where id = 4;
+
+ALTER TABLE rule_groups
+ADD COLUMN attributes_weights JSON;
+
+ALTER TABLE rule_groups
+ADD COLUMN paradigm_weights JSON;
+
+
+
+
+CREATE TYPE rule_dimension AS ENUM ('attribute', 'paradigm');
+ALTER TABLE rule_types ADD COLUMN dimension rule_dimension;
+
+update rule_types set dimension = 'attribute' where id in (1,2,4,5);
+update rule_types set dimension = 'paradigm', name = 'POO_inheritance' where id in (3);
+
+
+INSERT INTO rule_types (name, dimension) VALUES 
+('POO_polimorfism', 'paradigm'),
+('POO_encapsulation', 'paradigm'),
+('POO_abstraction', 'paradigm');
+
+ALTER TABLE rule_groups
+ADD COLUMN alfa REAL;
+
+ALTER TABLE inspections
+ADD COLUMN total_score REAL;
+
+ALTER TABLE inspections
+ADD COLUMN total_paradigm REAL;
+
+ALTER TABLE inspections
+ADD COLUMN total_attributes REAL;
+
+
+CREATE TABLE inspection_rule (
+    id SERIAL PRIMARY KEY,
+    inspection_id INT REFERENCES inspections(id) ON DELETE CASCADE,
+    rule_id INT REFERENCES rules(id) ON DELETE SET NULL,
+    calification REAL,
+    comment JSON
+);

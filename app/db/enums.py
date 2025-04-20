@@ -36,3 +36,8 @@ class LanguageEnum(str, Enum):
 class ResultStatusEnum(str, Enum):
     VALIDATION_ERROR = "validation_error"
     OK = "ok"
+
+
+class RuleDimensionEnum(str, Enum):
+    attribute = 'attribute'
+    paradigm = 'paradigm'

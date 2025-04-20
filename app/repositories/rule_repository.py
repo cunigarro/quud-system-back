@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session, joinedload
 
-from app.db.models import Rule, RuleGroup, RuleGroupRule
+from app.db.models import (
+    Rule, RuleGroup, RuleGroupRule, RuleType
+)
 
 
 class RuleRepository:
@@ -9,12 +11,31 @@ class RuleRepository:
         return db.query(Rule).filter(Rule.deleted_at.is_(None)).all()
 
     @staticmethod
-    def create_group(db: Session, name: str, description: str, owner_id: int, rule_ids: list, flow_config=dict):
+    def get_all_rules_types(db: Session):
+        return db.query(RuleType).filter(RuleType.deleted_at.is_(None)).all()
+
+    @staticmethod
+    def create_group(
+        db: Session,
+        name: str,
+        description: str,
+        owner_id: int,
+        rule_ids: list,
+        flow_config: dict,
+        attributes_weights: dict,
+        paradigm_weights: dict,
+        alfa: float
+    ):
+        attr_weights_serialized = [w.model_dump() for w in attributes_weights]
+        param_weights_serialized = [w.model_dump() for w in paradigm_weights]
         group = RuleGroup(
             name=name,
             description=description,
             owner_id=owner_id,
-            flow_config=flow_config
+            flow_config=flow_config,
+            attributes_weights=attr_weights_serialized,
+            paradigm_weights=param_weights_serialized,
+            alfa=alfa
         )
         db.add(group)
         db.commit()
